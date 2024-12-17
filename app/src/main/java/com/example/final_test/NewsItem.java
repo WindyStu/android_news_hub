@@ -8,6 +8,7 @@ public class NewsItem implements Serializable {
     private String href;
     private String imgSrc;
     private String details;
+    private boolean isFavorite;
 
     public String[] getTextList(){
         return new String[]{
@@ -25,12 +26,13 @@ public class NewsItem implements Serializable {
                 '}';
     }
 
-    public NewsItem(String title, String summarize, String href, String imgSrc, String details) {
+    public NewsItem(String title, String summarize, String href, String imgSrc, String details, boolean isFavorite) {
         this.title = title;
         this.summarize = summarize;
         this.href = href;
         this.imgSrc = imgSrc;
         this.details = details;
+        this.isFavorite = isFavorite;
     }
 
     public void setTitle(String title) {
@@ -71,5 +73,13 @@ public class NewsItem implements Serializable {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

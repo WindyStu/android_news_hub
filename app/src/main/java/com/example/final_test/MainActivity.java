@@ -3,16 +3,22 @@ package com.example.final_test;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,39 +31,57 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_main_news);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         newsViewModel = new ViewModelProvider(this).get(NewsViewModel.class);
 
-        MutableLiveData<List<NewsItem>> NewsList = newsViewModel.getNewsList();
-        ListView lv =findViewById(R.id.news_lv);
+        // Observe the news list
+        newsViewModel.getNewsList().observe(this, newsItems -> {
+            if (newsItems != null && !newsItems.isEmpty()) {
+                // Load HomeFragment only when news items are available
+                loadFragment(new HomeFragment());
+
+            } else {
+                // Optionally handle the case where there are no news items
+                Toast.makeText(MainActivity.this, "没有新闻可显示", Toast.LENGTH_SHORT).show();
+            }
+        });
         gainWebPage(url);
+        // Load the default fragment
+//        loadFragment(new HomeFragment()); // This can be removed if you want to wait for data
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                NewsItem item =(NewsItem) parent.getItemAtPosition(position);
-                Intent intent = new Intent(MainActivity.this, NewsItemActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(KEY_DATA, item);
-                intent.putExtras(bundle);
-                startActivity(intent);
+        // Set up bottom navigation
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    loadFragment(new HomeFragment());
+                    return true;
+                case R.id.nav_search:
+                    loadFragment(new SearchFragment());
+                    return true;
+                case R.id.nav_favorites:
+                    loadFragment(new FavoritesFragment());
+                    return true;
             }
-        });
-        NewsList.observe(this, new Observer<List<NewsItem>>() {
-            @Override
-            public void onChanged(List<NewsItem> newsItems) {
-                NewsItemAdapter adapter = new NewsItemAdapter(MainActivity.this, newsItems);
-                lv.setAdapter(adapter);
-            }
+            return false;
         });
 
-        MutableLiveData<String > erroMessage = newsViewModel.getErrMessage();
+        // Start loading news data
+
+
+        MutableLiveData<String> erroMessage = newsViewModel.getErrMessage();
         erroMessage.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
             }
         });
-        loadNewsFromDatabase();
+    }
+
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.commit();
     }
 
     private void gainWebPage(String url) {
@@ -70,12 +94,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadNewsFromDatabase() {
-        /**
-         * 数据库测试
-         * @param none
-         * @return void
-         */
-
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         Cursor cursor = dbHelper.getAllNews();
 
@@ -84,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             int summarizeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_SUMMARIZE);
             int hrefIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_HREF);
             int imgSrcIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMG_SRC);
-            int details = cursor.getColumnIndex(DatabaseHelper.COLUMN_DETAILS);
 
             if (titleIndex >= 0 && summarizeIndex >= 0 && hrefIndex >= 0 && imgSrcIndex >= 0) {
                 String title = cursor.getString(titleIndex);
@@ -97,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Summarize: " + summarize);
                 System.out.println("Href: " + href);
                 System.out.println("ImgSrc: " + imgSrc);
-                System.out.println("Details："+details);
             }
         }
         cursor.close();

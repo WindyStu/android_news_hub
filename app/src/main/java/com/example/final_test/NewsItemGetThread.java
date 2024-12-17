@@ -50,6 +50,7 @@ public class NewsItemGetThread extends Thread{
                 String summarize = news.select("div.post--content p").first().text();
 
                 String details = fetchDetailsFromHref(href);
+                String detailsPinyin = PinyinUtils.toPinyin(details);
 
                 ContentValues values = new ContentValues();
                 values.put(DatabaseHelper.COLUMN_TITLE, title);
@@ -57,10 +58,12 @@ public class NewsItemGetThread extends Thread{
                 values.put(DatabaseHelper.COLUMN_HREF, href);
                 values.put(DatabaseHelper.COLUMN_IMG_SRC, imgSrc);
                 values.put(DatabaseHelper.COLUMN_DETAILS, details);
+                values.put(DatabaseHelper.COLUMN_DETAILS_PINYIN, detailsPinyin);
+                values.put(DatabaseHelper.COLUMN_IS_FAVORITE, 0);
 
                 db.insert(DatabaseHelper.TABLE_NEWS, null, values);
 
-                list.add(new NewsItem(title, summarize, href, imgSrc, details));
+                list.add(new NewsItem(title, summarize, href, imgSrc, details, false));
             }
             newList.postValue(list);
         } catch (IOException e) {
