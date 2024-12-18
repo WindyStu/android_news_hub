@@ -36,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
         newsViewModel = new ViewModelProvider(this).get(NewsViewModel.class);
 
         // Observe the news list
-        newsViewModel.getNewsList().observe(this, newsItems -> {
-            if (newsItems != null && !newsItems.isEmpty()) {
-                // Load HomeFragment only when news items are available
-                loadFragment(new HomeFragment());
-
-            } else {
-                // Optionally handle the case where there are no news items
-                Toast.makeText(MainActivity.this, "没有新闻可显示", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        newsViewModel.getNewsList().observe(this, newsItems -> {
+//            if (newsItems != null && !newsItems.isEmpty()) {
+//                // Load HomeFragment only when news items are available
+//                loadFragment(new HomeFragment());
+//            } else {
+//                // Optionally handle the case where there are no news items
+//                Toast.makeText(MainActivity.this, "没有新闻可显示", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+        loadFragment(new HomeFragment());
         gainWebPage(url);
         // Load the default fragment
 //        loadFragment(new HomeFragment()); // This can be removed if you want to wait for data
