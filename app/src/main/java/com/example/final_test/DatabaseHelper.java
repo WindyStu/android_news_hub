@@ -19,6 +19,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DETAILS = "details";
     public static final String COLUMN_IS_FAVORITE = "isFavorite";
     public static final String TABLE_FAVORITES = "favorites";
+    public static final String TABLE_USERS = "users";
+    public static final String COLUMN_USERNAME = "username";
+    public static final String COLUMN_PASSWORD = "password";
+
+    private static final String TABLE_USERS_CREATE =
+            "CREATE TABLE " + TABLE_USERS + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_USERNAME + " TEXT UNIQUE, " +
+                    COLUMN_PASSWORD + " TEXT" +
+                    ");";
 
     private static final String TABLE_CREATE =
             "CREATE TABLE " + TABLE_NEWS + " (" +
@@ -50,6 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TABLE_CREATE);
         db.execSQL(TABLE_FAVORITES_CREATE);
+        db.execSQL(TABLE_USERS_CREATE);
     }
 
     @Override

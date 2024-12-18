@@ -1,6 +1,7 @@
 package com.example.final_test;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -31,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_main_news);
+
+        SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        boolean isLoggedIn = preferences.getBoolean("is_logged_in", false);
+        if (!isLoggedIn) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish(); // 结束当前 Activity
+        }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         newsViewModel = new ViewModelProvider(this).get(NewsViewModel.class);

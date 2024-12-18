@@ -15,6 +15,10 @@
             android:exported="false"
             android:parentActivityName="com.example.final_test.MainActivity" />
         <activity
+            android:name="com.example.final_test.LoginActivity" />
+        <activity android:name=".RegisterActivity" />
+
+        <activity
             android:name="com.example.final_test.MainActivity"
             android:exported="true">
             <intent-filter>
