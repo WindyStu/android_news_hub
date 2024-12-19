@@ -17,7 +17,9 @@
         <activity
             android:name="com.example.final_test.LoginActivity" />
         <activity android:name=".RegisterActivity" />
-
+        <activity android:name=".NewsDetailsActivity" />
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".PublishNewsActivity" />
         <activity
             android:name="com.example.final_test.MainActivity"
             android:exported="true">

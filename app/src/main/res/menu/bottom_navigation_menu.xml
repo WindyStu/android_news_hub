@@ -12,4 +12,9 @@
         android:id="@+id/nav_favorites"
         android:icon="@android:drawable/btn_star_big_on"
         android:title="Favorites" />
+
+    <item
+        android:id="@+id/nav_me"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="Me" />
 </menu>

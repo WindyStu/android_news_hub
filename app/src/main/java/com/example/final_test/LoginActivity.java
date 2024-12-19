@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         textView.setTypeface(Typeface.createFromAsset(getAssets(), "title.ttf"));
         textView.setEnabled(false);
 
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new DatabaseHelper(getApplicationContext());
 
         loginButton.setOnClickListener(v -> loginUser());
         registerButton.setOnClickListener(v -> openRegisterActivity());
@@ -58,12 +58,14 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         if (cursor != null && cursor.moveToFirst()) {
+
             Toast.makeText(this, "欢迎 " + username, Toast.LENGTH_SHORT).show();
             cursor.close();
             startActivity(new Intent(this, MainActivity.class));
             SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("is_logged_in", true);
+            editor.putString("username", username);
             editor.apply();
             finish();
         } else {

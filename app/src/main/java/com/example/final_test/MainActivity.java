@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.my_main_news);
 
         SharedPreferences preferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+//        //登录测试
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putBoolean("is_logged_in", false); // 重置登录状态
+//        editor.apply();
+
         boolean isLoggedIn = preferences.getBoolean("is_logged_in", false);
         if (!isLoggedIn) {
             startActivity(new Intent(this, LoginActivity.class));
@@ -69,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.nav_favorites:
                     loadFragment(new FavoritesFragment());
+                    return true;
+                case R.id.nav_me:
+                    loadFragment(new MyFragment());
                     return true;
             }
             return false;

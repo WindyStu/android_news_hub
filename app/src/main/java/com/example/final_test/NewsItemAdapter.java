@@ -3,6 +3,7 @@ package com.example.final_test;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -73,10 +74,15 @@ public class NewsItemAdapter extends ArrayAdapter<NewsItem> {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, NewsItemActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(HomeFragment.KEY_DATA, newsItem);
-                intent.putExtras(bundle);
+//                Intent intent = new Intent(context, NewsItemActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(HomeFragment.KEY_DATA, newsItem);
+//                intent.putExtras(bundle);
+//                context.startActivity(intent);
+                Intent intent = new Intent(context, NewsDetailsActivity.class);
+                intent.putExtra("title", newsItem.getTitle());
+                intent.putExtra("content", newsItem.getDetails());
+                intent.putExtra("imgUrl", newsItem.getImgSrc());
                 context.startActivity(intent);
             }
         });
@@ -95,12 +101,16 @@ public class NewsItemAdapter extends ArrayAdapter<NewsItem> {
         boolean newFavoriteStatus = !isCurrentlyFavorite;
         newsItem.setFavorite(newFavoriteStatus);
 
+        SharedPreferences preferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String username = preferences.getString("username", "用户");
+
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_TITLE, newsItem.getTitle());
         values.put(DatabaseHelper.COLUMN_SUMMARIZE, newsItem.getSummarize());
         values.put(DatabaseHelper.COLUMN_HREF, newsItem.getHref());
         values.put(DatabaseHelper.COLUMN_IMG_SRC, newsItem.getImgSrc());
         values.put(DatabaseHelper.COLUMN_DETAILS, newsItem.getDetails());
+        values.put(DatabaseHelper.COLUMN_USERNAME, username);
 
         if (newFavoriteStatus) {
             // Insert into favorites table

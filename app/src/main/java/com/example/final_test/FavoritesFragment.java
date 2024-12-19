@@ -1,5 +1,7 @@
 package com.example.final_test;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,12 +23,15 @@ import java.util.List;
 
 public class FavoritesFragment extends Fragment {
     private NewsViewModel newsViewModel;
+    private String username;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
         ListView lv = view.findViewById(R.id.favorites_lv);
+        SharedPreferences preferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        username = preferences.getString("username", "用户");
 
         newsViewModel = new ViewModelProvider(requireActivity()).get(NewsViewModel.class);
         loadFavoritesFromDatabase(lv);
@@ -44,7 +49,7 @@ public class FavoritesFragment extends Fragment {
 
     private void loadFavoritesFromDatabase(ListView lv) {
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-        Cursor cursor = dbHelper.getAllFavorites(); // Create this method in DatabaseHelper
+        Cursor cursor = dbHelper.getAllFavorites(username); // Create this method in DatabaseHelper
 
         List<NewsItem> favoritesList = new ArrayList<>();
         while (cursor.moveToNext()) {
